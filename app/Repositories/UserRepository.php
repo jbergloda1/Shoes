@@ -14,19 +14,74 @@ use Config;
 
 class UserRepository
 {
-    public function store($inputs)
+    public function search($inputs)
+    {
+        return User:://with('category')
+        when(isset($inputs['code']), function ($query) use ($inputs) {
+            return $query->where('code', 'LIKE', '%' . $inputs['code'] . '%');
+        })
+        ->when(isset($inputs['email']), function ($query) use ($inputs) {
+            return $query->where('email', 'LIKE', '%' . $inputs['email'] . '%');
+        })
+        ->when(isset($inputs['name']), function ($query) use ($inputs) {
+            return $query->where('name', 'LIKE', '%' . $inputs['name'] . '%');
+        })
+        ->orderBy('email', 'desc')
+        ->paginate(10);
+    }
+    public function store($inputs, $newNamefile)
     {
         return User::create([
-            'name'      => $inputs['name'],
-            'email'     => $inputs['email'],
-            'password'  => Hash::make($inputs['password'])
+            'code'          => $inputs['code'],
+            'name'          => $inputs['name'],
+            'dateofbirth'   => $inputs['dateofbirth'],
+            'phone'         => $inputs['phone'],
+            'address'       => $inputs['address'],
+            'email'         => $inputs['email'],
+            'img'           => $newNamefile,
+            'password'      => Hash::make($inputs['password']),
+            'role'          => $inputs['role'],
+            'status'        => 1,
         ]);
+    }
+    public function show($id)
+    {
+        return User::findOrFail($id);
     }
 
     public function get()
     {
         return SessionUser::where('user_id', auth()->id())->first();
     }
+
+    public function update($inputs, $id)
+    {
+        return User::findOrFail($id)
+            ->update($inputs);
+    }
+    public function updateNew($inputs, $id, $newNamefile)
+    {
+        return User::findOrFail($id)
+            ->update([
+                'code'          => $inputs['code'],
+                'name'          => $inputs['name'],
+                'dateofbirth'   => $inputs['dateofbirth'],
+                'phone'         => $inputs['phone'],
+                'address'       => $inputs['address'],
+                'email'         => $inputs['email'],
+                'img'           => $newNamefile,
+                'password'      => Hash::make($inputs['password']),
+                'role'          => $inputs['role'],
+                'status'        => $inputs['status'],
+            ]);
+    }
+    public function destroy($id)
+    {
+        return User::findOrFail($id)
+            ->delete();
+    }
+
+
 
     public function login($inputs)
     {

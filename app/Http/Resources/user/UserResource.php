@@ -9,11 +9,15 @@ class UserResource extends BaseResource
     {
         return [
             'id'            => $this->id,
+            'code'          => $this->code,
             'name'          => $this->name,
+            'dateofbirth'   => $this->dateofbirth,
+            'phone'         => $this->phone,
+            'address'       => $this->address,
             'email'         => $this->email,
-            'password'      => $this->password,
-            'created_at'    => $this->created_at,
-            'updated_at'    => $this->updated_at,
+            'img'           => $this->img,
+            'role'          => $this->role,
+            'status'        => $this->status
         ];
     }
 }

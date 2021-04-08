@@ -38,4 +38,24 @@ class ProductSizeColorRequest extends FormRequest
             'amount'
         ]);
     }
+
+    //Update Product Size
+    public function updateRules(): array
+    {
+        return [
+            // 'product_id' =>'integer',
+            // 'size_id'    => 'required|array|min:1|max:10',
+            // 'amount'     => 'required|integer',
+            // 'status'     => 'integer'
+        ];
+    }
+    public function updateFilter()
+    {
+        return $this->only([
+            'product_id',
+            'size_id',
+            'color_id',
+            'amount'
+        ]);
+    }
 }

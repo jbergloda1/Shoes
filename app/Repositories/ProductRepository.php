@@ -4,15 +4,16 @@ namespace App\Repositories;
 
 use App\Models\Product;
 use App\Models\Size;
-use App\Models\ProductImage;
 use App\Models\ProductSizeColor;
 use App\Models\Color;
+use App\Models\Supplier;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\UserUnauthorizedException;
 use Config;
 
 class ProductRepository
 {
+    //search
     public function search($inputs)
     {
         return Product::with('supplier')
@@ -28,108 +29,99 @@ class ProductRepository
         ->orderBy('name', 'desc')
         ->paginate(10);
     }
-
-    public function store($inputs, $newNamefile, $export_price)
+    //show
+    public function show($id)
+    {
+        return Product::findOrFail($id);
+    }
+    //destroy
+    public function destroy($id)
+    {
+        ProductSizeColor::where('product_id', $id)
+            ->delete();
+        return Product::findOrFail($id)
+            ->delete();
+    }
+    //store
+    public function store($inputs, $newNamefile)
     {
         return Product::create([
             'name'          => $inputs['name'],
             'img'           => $newNamefile,
             'note'          => $inputs['note'],
             'import_price'  => $inputs['import_price'],
-            'export_price'  => $export_price,
+            'export_price'  => $inputs['export_price'],
             'sale'          => $inputs['sale'],
-            'status'        => 1,
-            'supplier_id'   => $inputs['supplier_id']
+            'supplier_id'   => $inputs['supplier_id'],
+            'status'        => 1
         ]);
     }
-
-    public function storeImage($new_name, $product_id)
+    //storePSC
+    public function storePSC($data, $product_id)
     {
-        return ProductImage::create([
-            'product_id'    => $product_id,
-            'image'         => $new_name
-        ]);
-    }
-
-    public function storeSize($data, $product_id)
-    {
-       // dd($rowSize);
-        return ProductSize::create([
+        return ProductSizeColor::create([
             'product_id' => $product_id,
             'size_id'    => $data['size'],
-            'amount'     => $data['amount'],
-            'status'     => 1
+            'color_id'   => $data['color'],
+            'amount'     => $data['amount']
         ]);
     }
-
-    public function storeColor($rowColor, $product_id)
+    //SUM
+    public function sum($id)
     {
-        return ProductColor::create([
-            'product_id'    => $product_id,
-            'color'         => $rowColor
-        ]); 
+        return ProductSizeColor::where('product_id', $id)->sum('amount');
     }
-
-    public function show($id)
+    //amount
+    public function amount($product_id, $totalAmount)
     {
-        return Product::findOrFail($id);
+        return Product::where('id', $product_id)
+            ->update([
+                'amount' => $totalAmount
+            ]);
     }
-
-    public function destroy($id)
-    {
-        ProductImage::where('product_id', $id)
-            ->delete();
-        ProductSizeColor::where('product_id', $id)
-            ->delete();
-        return Product::findOrFail($id)
-            ->delete();
-    }
-    
-    // public function update($inputs, $id, $export_price)
-    // {
-    //     return Product::findOrFail($id)
-    //         ->update([
-    //             'name'          => $inputs['name'],
-    //             //'amount'        => $inputs['amount'],
-    //             // 'img'           => $newNamefile,
-    //             'note'          => $inputs['note'],
-    //             'import_price'  => $inputs['import_price'],
-    //             'export_price'  => $export_price,
-    //             'sale'          => $inputs['sale'],
-    //             'status'        => $inputs['status'],
-    //             'supplier_id'   => $inputs['supplier_id']
-    //         ]);
-    // }
-    public function updateNew($inputs, $id, $newNamefile, $export_price)
+    //update
+    public function update($inputs, $id)
     {
         return Product::findOrFail($id)
             ->update([
                 'name'          => $inputs['name'],
-                //'amount'        => $inputs['amount'],
+                'img'           => $inputs['img'],
+                'note'          => $inputs['note'],
+                'import_price'  => $inputs['import_price'],
+                'export_price'  => $inputs['export_price'],
+                'sale'          => $inputs['sale'],
+                'supplier_id'   => $inputs['supplier_id'],
+                'status'        => $inputs['status']
+            ]);
+    }
+    //updateImg
+    public function updateImg($inputs, $newNamefile, $id)
+    {
+        return Product::findOrFail($id)
+            ->update([
+                'name'          => $inputs['name'],
                 'img'           => $newNamefile,
                 'note'          => $inputs['note'],
                 'import_price'  => $inputs['import_price'],
-                'export_price'  => $export_price,
+                'export_price'  => $inputs['export_price'],
                 'sale'          => $inputs['sale'],
-                'status'        => $inputs['status'],
-                'supplier_id'   => $inputs['supplier_id']
+                'supplier_id'   => $inputs['supplier_id'],
+                'status'        => $inputs['status']
             ]);
     }
-
-    public function showImage($id)
+    //showPSC
+    public function showPSC($id)
     {
-        return ProductImage::where('product_id', '=', $id)->get();
+        return ProductSizeColor::where('product_id', $id)->get();
     }
-
-    public function sum($product_id)
+    //updatePSC
+    public function updatePSC($data)
     {
-        return ProductSize::where('product_id', $product_id)->sum('amount');
-    }
-    public function amount($product_id, $totalAmount)
-    {
-        return Product::where('id', '=', $product_id)
+        return ProductSizeColor::findOrFail($data['id'])
             ->update([
-                'amount' => $totalAmount
-            ]);
+                'size_id'    => $data['size'],
+                'color_id'   => $data['color'],
+                'amount'     => $data['amount']
+        ]);
     }
 }

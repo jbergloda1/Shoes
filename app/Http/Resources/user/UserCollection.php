@@ -10,11 +10,15 @@ class UserCollection extends BaseCollection
         return $this->map(function ($user) {
             return [
                 'id'            => $user->id,
+                'code'          => $user->code,
                 'name'          => $user->name,
+                'dateofbirth'   => $user->dateofbirth,
+                'phone'         => $user->phone,
+                'address'       => $user->address,
                 'email'         => $user->email,
-                'password'      => $user->password,
-                'created_at'    => $user->created_at,
-                'updated_at'    => $user->updated_at,
+                'img'           => $user->img,
+                'role'          => $user->role,
+                'status'        => $user->status
             ];
         });
     }

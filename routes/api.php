@@ -36,7 +36,12 @@
 // });
 Route::namespace('Api')->group(function(){
     //Users
+    Route::get('user', 'UserController@search')->name('user.search');
     Route::post('user', 'UserController@store')->name('user.store');
+    Route::get('user/{id}', 'UserController@show')->name('user.show');
+    Route::put('user/{id}', 'UserController@update')->name('user.update');
+    Route::delete('user/{id}', 'UserController@destroy')->name('user.destroy');
+
     Route::post('login', 'UserController@login')->name('user.login');
 
     //Category
