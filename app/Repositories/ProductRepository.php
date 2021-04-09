@@ -61,8 +61,8 @@ class ProductRepository
     {
         return ProductSizeColor::create([
             'product_id' => $product_id,
-            'size_id'    => $data['size'],
-            'color_id'   => $data['color'],
+            'size_id'    => $data['size_id'],
+            'color_id'   => $data['color_id'],
             'amount'     => $data['amount']
         ]);
     }
@@ -119,8 +119,8 @@ class ProductRepository
     {
         return ProductSizeColor::findOrFail($data['id'])
             ->update([
-                'size_id'    => $data['size'],
-                'color_id'   => $data['color'],
+                'size_id'    => $data['size_id'],
+                'color_id'   => $data['color_id'],
                 'amount'     => $data['amount']
         ]);
     }

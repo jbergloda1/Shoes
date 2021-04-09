@@ -62,13 +62,13 @@ class ProductController extends Controller
             
             if($product == true){ 
                 //Product-Size-Color
-                if(isset($requestSizeColor->size) && isset($requestSizeColor->color) && isset($requestSizeColor->amount)){
-                    $size = $requestSizeColor->size;
-                    $color = $requestSizeColor->color; 
+                if(isset($requestSizeColor->size_id) && isset($requestSizeColor->color_id) && isset($requestSizeColor->amount)){
+                    $size = $requestSizeColor->size_id;
+                    $color = $requestSizeColor->color_id; 
                     $amount = $requestSizeColor->amount;
                     $arrlength = count($amount);
                     for($x = 0; $x < $arrlength; $x++) {
-                        $data = array('size'=>$size[$x], 'color'=> $color[$x], 'amount'=>$amount[$x]);
+                        $data = array('size_id'=>$size[$x], 'color_id'=> $color[$x], 'amount'=>$amount[$x]);
                         $PSC = new BaseResource($this->productRepository->storePSC($data, $product_id));
                     }
                     //Amount Product
@@ -99,11 +99,13 @@ class ProductController extends Controller
                            array_push($idPSC, $row['id']);
                         }
                         $size = $requestSizeColor->size_id;
-                        $color = $requestSizeColor->color_id; 
+                        $color = $requestSizeColor->color_id;
                         $amount = $requestSizeColor->amount;
+                        // $rtt = [$size, $color, $amount];
+                        // dd($rtt);
                         $arrlength = count($amount);
                         for($x = 0; $x < $arrlength; $x++) {
-                            $data = array('id'=>$idPSC[$x], 'size'=>$size[$x], 'color'=> $color[$x], 'amount'=>$amount[$x]);
+                            $data = array('id'=>$idPSC[$x], 'size_id'=>$size[$x], 'color_id'=> $color[$x], 'amount'=>$amount[$x]);
                             $PSC = new BaseResource($this->productRepository->updatePSC($data));
                         }
                         //Amount Product
